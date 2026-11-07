@@ -3,7 +3,7 @@
     "summary": "WhatsApp channel beside email and inbox",
     "description": """
 WhatsApp notifications for the apps installed on this database.
-Built for Odoo 18. The same module is published for Odoo 17 and 19.
+Built for Odoo 19. The same module is published for Odoo 17 and 18.
 
 This module needs the external WaNoti service. It installs and opens
 without an activation key. Nothing is sent until an administrator
@@ -19,7 +19,7 @@ a code instead of a password, and website checkout codes stay off
 until the administrator enables them. If WhatsApp is disconnected,
 password login and checkout continue.
     """,
-    "version": "18.0.1.0.5",
+    "version": "19.0.1.0.5",
     "category": "Productivity/Discuss",
     "author": "WaNoti",
     "website": "https://wanoti.net",
