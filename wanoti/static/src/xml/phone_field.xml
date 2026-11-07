@@ -9,7 +9,7 @@
                     <i class="fa fa-caret-down" aria-hidden="true"/>
                 </button>
                 <span t-if="state.open" class="o_wanoti_phone_menu" role="listbox" t-att-style="menuStyle">
-                    <input class="o_input" type="text" autocomplete="off" t-ref="search" t-att-placeholder="searchPlaceholder" t-att-aria-label="searchPlaceholder" t-att-value="state.query" t-on-input="onSearch" t-on-keydown="onSearchKey"/>
+                    <input class="o_input o_wanoti_phone_search" type="text" autocomplete="off" t-ref="search" t-att-placeholder="searchPlaceholder" t-att-aria-label="searchPlaceholder" t-att-value="state.query" t-on-input="onSearch" t-on-keydown="onSearchKey"/>
                     <span class="o_wanoti_phone_options">
                         <t t-foreach="visibleCountries" t-as="country" t-key="country.code">
                             <button type="button" class="o_wanoti_phone_option" t-att-class="{'o_wanoti_phone_option_active': country_index === state.active, 'o_wanoti_phone_option_selected': country.code === state.iso}" t-att-data-code="country.code" t-on-click="onPick" t-esc="countryText(country)"/>
