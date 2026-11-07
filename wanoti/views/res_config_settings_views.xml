@@ -57,8 +57,8 @@
                         </setting>
                     </block>
                     <block title="Notifications" name="wanoti_events_intro">
-                        <setting string="Business events" help="Every switch starts off. A section appears only when that app is installed. Customer is the partner on the document. Staff is the salesperson, assignee, or responsible user.">
-                            <button name="action_open_rules" type="object" string="Open the full list" class="btn-secondary" icon="fa-list"/>
+                        <setting string="All installed apps" help="Discuss, activities, notes, and every other app on this database are still listed. Open the full list, or use the WaNoti Notifications menu. The sections below are the named events, and they appear only when that app is installed.">
+                            <button name="action_open_rules" type="object" string="Open all notifications" class="btn-primary" icon="fa-list"/>
                         </setting>
                     </block>
                     <block title="Sales" name="wanoti_app_sale" invisible="not wanoti_has_sale">
