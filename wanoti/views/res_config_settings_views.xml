@@ -17,6 +17,13 @@
                     <field name="wanoti_has_hr_recruitment" invisible="1"/>
                     <field name="wanoti_has_hr_holidays" invisible="1"/>
                     <field name="wanoti_has_maintenance" invisible="1"/>
+                    <block title="Account" name="wanoti_account">
+                        <setting string="Create an account on wanoti.net" help="Open wanoti.net and create an account. Then open Dashboard, then Plugins, and copy the API key. Paste that key in Connection below. The API URL stays https://wanoti.net/api. Support is support@wanoti.net.">
+                            <div class="mt8">
+                                <a href="https://wanoti.net" target="_blank" class="btn btn-primary">Open wanoti.net</a>
+                            </div>
+                        </setting>
+                    </block>
                     <block title="Data sharing" name="wanoti_consent">
                         <setting string="Send through WaNoti" help="Starts off. Phone numbers and the message or code you turn on are sent to WaNoti for WhatsApp delivery. Records stay in this database.">
                             <field name="wanoti_data_consent"/>
@@ -26,7 +33,7 @@
                         <setting string="API URL" help="Use https://wanoti.net/api for the hosted service.">
                             <field name="wanoti_api_url" placeholder="https://wanoti.net/api"/>
                         </setting>
-                        <setting string="API key" help="From Dashboard, then Plugins, on wanoti.net.">
+                        <setting string="API key" help="Create an account at wanoti.net, then copy this from Dashboard, then Plugins.">
                             <field name="wanoti_api_key" password="True"/>
                         </setting>
                         <setting string="Connection status" help="The result stays here after the test.">
