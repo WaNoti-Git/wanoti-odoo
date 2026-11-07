@@ -258,16 +258,8 @@ class WanotiRule(models.Model):
     def action_open_rules(self):
         self._refresh_events()
         return {
-            "type": "ir.actions.act_window",
+            "type": "ir.actions.client",
+            "tag": "wanoti_notifications",
             "name": _("Notifications"),
-            "res_model": "wanoti.rule",
-            "view_mode": "list",
             "target": "current",
-            "context": {"search_default_group_app": 1},
-            "domain": [("company_id", "in", self.env.companies.ids)],
-            "help": _(
-                "<p>Every installed app is listed here, including discussions, activities, and notes. "
-                "Named events such as a sent quotation are included too. "
-                "Every switch starts off. Turn on Customer, Staff, or both.</p>"
-            ),
         }
