@@ -325,7 +325,7 @@ class WanotiDispatcher(models.AbstractModel):
                 api_url + "/plugin/ping",
                 json={
                     "site_url": self._site_url(),
-                    "plugin_version": "odoo-17.0.1.0.17",
+                    "plugin_version": "odoo-17.0.1.0.18",
                     "wp_version": "odoo-%s" % release.version,
                     "woocommerce_active": False,
                 },
