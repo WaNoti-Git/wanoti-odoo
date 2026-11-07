@@ -47,6 +47,7 @@ class WanotiHome(Home):
                         return request.render("wanoti.wanoti_otp_login", {
                             "error": _("WhatsApp verification could not check the password."),
                             "redirect": redirect or "",
+                            "message": "",
                         })
                     if not checked:
                         return super().web_login(redirect=redirect, **kw)
@@ -63,6 +64,7 @@ class WanotiHome(Home):
                         return request.render("wanoti.wanoti_otp_login", {
                             "error": result.get("message"),
                             "redirect": redirect or "",
+                            "message": "",
                         })
                     request.session["wanoti_login_token"] = result["token"]
                     safe = quote(redirect or "", safe="/")
@@ -86,6 +88,7 @@ class WanotiHome(Home):
             return request.render("wanoti.wanoti_otp_login", {
                 "error": _("We could not send a code for this login. Check it, and make sure the user has a mobile number."),
                 "redirect": redirect or "",
+                "message": "",
             })
         result = request.env["wanoti.otp"].sudo().create_challenge(company, phone, "login", user=user)
         if not result.get("ok"):
@@ -95,6 +98,7 @@ class WanotiHome(Home):
             return request.render("wanoti.wanoti_otp_login", {
                 "error": message,
                 "redirect": redirect or "",
+                "message": "",
             })
         request.session["wanoti_login_token"] = result["token"]
         return request.redirect("/web/login/wanoti-otp?redirect=%s" % quote(redirect or "", safe="/"))
@@ -118,6 +122,7 @@ class WanotiHome(Home):
         return request.render("wanoti.wanoti_otp_login", {
             "error": error,
             "redirect": redirect or "",
+            "message": "",
         })
 
     @http.route("/web/login/wanoti-otp/resend", type="http", auth="public", methods=["POST"], sitemap=False)
@@ -138,7 +143,7 @@ class WanotiHome(Home):
         return request.render("wanoti.wanoti_otp_login", {
             "error": error,
             "redirect": redirect or "",
-            "resent": bool(result.get("ok")),
+            "message": _("A new code was sent.") if result.get("ok") else "",
         })
 
 
