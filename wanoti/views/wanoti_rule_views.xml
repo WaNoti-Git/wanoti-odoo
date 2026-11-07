@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wanoti_rule_view_list" model="ir.ui.view">
+        <field name="name">wanoti.rule.list</field>
+        <field name="model">wanoti.rule</field>
+        <field name="arch" type="xml">
+            <list string="Notifications" editable="bottom" create="false" delete="false">
+                <field name="app_label" readonly="1"/>
+                <field name="document" readonly="1"/>
+                <field name="subtype_id" readonly="1"/>
+                <field name="customer_locked" column_invisible="1"/>
+                <field name="notify_customer" widget="boolean_toggle" readonly="customer_locked"/>
+                <field name="notify_staff" widget="boolean_toggle"/>
+                <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="wanoti_rule_view_search" model="ir.ui.view">
+        <field name="name">wanoti.rule.search</field>
+        <field name="model">wanoti.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="app_label"/>
+                <field name="document"/>
+                <field name="subtype_id"/>
+                <filter name="enabled" string="Turned on" domain="['|', ('notify_customer', '=', True), ('notify_staff', '=', True)]"/>
+                <filter name="group_app" string="App" context="{'group_by': 'app_label'}"/>
+                <filter name="group_document" string="Document" context="{'group_by': 'document'}"/>
+            </search>
+        </field>
+    </record>
+</odoo>

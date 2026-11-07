@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_wanoti_rules" model="ir.actions.server">
+        <field name="name">WaNoti notifications</field>
+        <field name="model_id" ref="model_wanoti_rule"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_rules()</field>
+    </record>
+
+    <record id="action_wanoti_settings" model="ir.actions.act_window">
+        <field name="name">Connection</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'wanoti'}</field>
+    </record>
+
+    <menuitem id="menu_wanoti_root" name="WaNoti" sequence="46" groups="base.group_system"/>
+    <menuitem id="menu_wanoti_rules" name="Notifications" parent="menu_wanoti_root" action="action_wanoti_rules" sequence="10" groups="base.group_system"/>
+    <menuitem id="menu_wanoti_settings" name="Connection" parent="menu_wanoti_root" action="action_wanoti_settings" sequence="20" groups="base.group_system"/>
+</odoo>

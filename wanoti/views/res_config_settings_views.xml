@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.wanoti</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="WaNoti" string="WaNoti" name="wanoti" groups="base.group_system">
+                    <block title="Data sharing" name="wanoti_consent">
+                        <setting string="Send through WaNoti" help="Starts off. When on, phone numbers and the notification or code you enable are sent to WaNoti so they can be delivered on your WhatsApp. Records stay in this database. Privacy policy: https://wanoti.net/privacy">
+                            <field name="wanoti_data_consent"/>
+                        </setting>
+                    </block>
+                    <block title="Connection" name="wanoti_connection">
+                        <setting string="API URL" help="Use https://wanoti.net/api for the hosted service.">
+                            <field name="wanoti_api_url" placeholder="https://wanoti.net/api"/>
+                        </setting>
+                        <setting string="API key" help="From the WaNoti dashboard, under your account.">
+                            <field name="wanoti_api_key" password="True"/>
+                            <button name="action_wanoti_test" type="object" string="Test connection" class="btn-link" icon="fa-plug"/>
+                        </setting>
+                    </block>
+                    <block title="WhatsApp code" name="wanoti_otp">
+                        <setting string="Portal login" help="Starts off. When on, a portal customer with a mobile number enters a WhatsApp code after the password.">
+                            <field name="wanoti_otp_login"/>
+                        </setting>
+                        <setting string="Internal users" help="Starts off. When on, an internal user with a mobile number enters a WhatsApp code after the password. A user with no mobile number still signs in with the password only.">
+                            <field name="wanoti_otp_internal"/>
+                        </setting>
+                        <setting string="Code instead of password" help="Starts off. When on, a user who has a mobile number can sign in with a new WhatsApp code and does not type their Odoo password.">
+                            <field name="wanoti_otp_passwordless"/>
+                        </setting>
+                        <setting string="Website checkout" help="Starts off. When on, and Website Sales is installed, the customer confirms their mobile before payment.">
+                            <field name="wanoti_otp_checkout"/>
+                        </setting>
+                        <setting string="Send a test code" help="Uses the same WhatsApp template as a real code. Nothing is turned on by this.">
+                            <field name="wanoti_otp_test_phone" placeholder="2015xxxxxxxx"/>
+                            <button name="action_wanoti_test_otp" type="object" string="Send test code" class="btn-link" icon="fa-whatsapp"/>
+                        </setting>
+                    </block>
+                    <block title="Notifications" name="wanoti_events">
+                        <setting string="Events" help="Every event starts off. Turn on Customer, Staff, or both. The list follows the apps installed on this database, including Project, Helpdesk, Inventory, and Sales.">
+                            <button name="action_open_rules" type="object" string="Choose notifications" class="btn-primary" icon="fa-bell"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

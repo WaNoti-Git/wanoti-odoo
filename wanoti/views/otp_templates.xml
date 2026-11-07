@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="wanoti_login_code_link" inherit_id="web.login" name="WaNoti code login">
+        <xpath expr="//form[hasclass('oe_login_form')]" position="after">
+            <form t-if="request.env.company.sudo().wanoti_otp_passwordless" class="mt-2 text-center" method="post" action="/web/login/wanoti-code">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="redirect" t-att-value="redirect or ''"/>
+                <input type="hidden" name="login" id="wanoti_code_login"/>
+                <button type="submit" class="btn btn-link" onclick="var field = document.getElementById('login'); this.form.login.value = field ? field.value : '';">
+                    Send a WhatsApp code instead
+                </button>
+            </form>
+        </xpath>
+    </template>
+
+    <template id="wanoti_otp_login" name="WaNoti login code">
+        <t t-call="web.login_layout">
+            <form class="oe_login_form" role="form" method="post" action="/web/login/wanoti-otp">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="redirect" t-att-value="redirect or ''"/>
+                <p>Enter the 6-digit code sent to your WhatsApp.</p>
+                <p t-if="resent" class="alert alert-success">A new code was sent.</p>
+                <p t-if="error" class="alert alert-danger" t-esc="error"/>
+                <div class="mb-3">
+                    <input type="text" name="code" class="form-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" required="required"/>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Verify</button>
+            </form>
+            <form class="mt-2 text-center" method="post" action="/web/login/wanoti-otp/resend">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="redirect" t-att-value="redirect or ''"/>
+                <button type="submit" class="btn btn-link">Resend code</button>
+            </form>
+        </t>
+    </template>
+
+    <template id="wanoti_otp_checkout" name="WaNoti checkout code">
+        <t t-call="web.frontend_layout">
+            <div class="container py-5" style="max-width: 32rem;">
+                <h1 class="h3 mb-3">WhatsApp verification</h1>
+                <p t-if="phone">We will send a code to <t t-esc="phone"/>.</p>
+                <p t-else="">Add a mobile number on the customer, then come back.</p>
+                <p t-if="error" class="alert alert-danger" t-esc="error"/>
+                <form method="post" action="/shop/wanoti-otp">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input t-if="not sent" type="hidden" name="wanoti_action" value="send"/>
+                    <input t-if="sent" type="hidden" name="wanoti_action" value="verify"/>
+                    <div t-if="sent" class="mb-3">
+                        <input type="text" name="code" class="form-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" required="required"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <t t-if="sent">Verify</t>
+                        <t t-else="">Send WhatsApp code</t>
+                    </button>
+                </form>
+                <form t-if="sent" class="mt-2" method="post" action="/shop/wanoti-otp">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="wanoti_action" value="send"/>
+                    <button type="submit" class="btn btn-link">Resend code</button>
+                </form>
+                <p class="mt-3"><a href="/shop/checkout">Back to checkout</a></p>
+            </div>
+        </t>
+    </template>
+</odoo>
