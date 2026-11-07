@@ -1,4 +1,4 @@
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 
 
 class ResConfigSettings(models.TransientModel):
@@ -39,16 +39,17 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.wanoti_otp_checkout",
         readonly=False,
     )
-    wanoti_otp_test_phone = fields.Char(
-        string="Test mobile",
-        related="company_id.wanoti_test_phone",
-        readonly=False,
-    )
+    wanoti_otp_test_phone = fields.Char(string="Test mobile")
     wanoti_status_message = fields.Char(
         string="Connection status",
-        related="company_id.wanoti_status_message",
-        readonly=True,
+        compute="_compute_wanoti_status_message",
     )
+
+    @api.depends_context("company")
+    def _compute_wanoti_status_message(self):
+        message = self.env["ir.config_parameter"].sudo().get_param("wanoti.status_message") or ""
+        for record in self:
+            record.wanoti_status_message = message
 
     def execute(self):
         self.ensure_one()
@@ -60,7 +61,7 @@ class ResConfigSettings(models.TransientModel):
         return super().execute()
 
     def _wanoti_notice(self, message, ok):
-        self.company_id.sudo().write({"wanoti_status_message": message or ""})
+        self.env["ir.config_parameter"].sudo().set_param("wanoti.status_message", message or "")
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
