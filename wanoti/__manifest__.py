@@ -19,7 +19,7 @@ a code instead of a password, and website checkout codes stay off
 until the administrator enables them. If WhatsApp is disconnected,
 password login and checkout continue.
     """,
-    "version": "19.0.1.0.7",
+    "version": "19.0.1.0.8",
     "category": "Productivity/Discuss",
     "author": "WaNoti",
     "website": "https://wanoti.net",

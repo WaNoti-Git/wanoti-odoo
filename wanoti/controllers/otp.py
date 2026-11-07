@@ -22,6 +22,7 @@ class WanotiHome(Home):
     def _finish_login(self, user, redirect):
         user = user.sudo()
         request.session.pre_uid = user.id
+        request.session.pre_login = user.login
         if hasattr(request.session, "finalize"):
             request.session.finalize(request.env)
         if not request.session.uid:
