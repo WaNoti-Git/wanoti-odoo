@@ -1,4 +1,5 @@
 from . import res_company
+from . import res_partner
 from . import wanoti_rule
 from . import wanoti_dispatcher
 from . import wanoti_otp
