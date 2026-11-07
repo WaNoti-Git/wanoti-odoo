@@ -15,7 +15,9 @@ def _checkout_gate():
     company = order.company_id or request.env.company
     if not company.wanoti_otp_checkout:
         return None
-    phone = request.env["wanoti.otp"]._digits(order.partner_id.mobile or order.partner_id.phone or "")
+    from odoo.addons.wanoti.models.phone_utils import partner_raw_phone
+
+    phone = request.env["wanoti.otp"]._digits(partner_raw_phone(order.partner_id))
     if (
         request.session.get("wanoti_checkout_ok") == order.id
         and request.session.get("wanoti_checkout_phone") == phone

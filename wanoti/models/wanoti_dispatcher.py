@@ -4,6 +4,8 @@ from odoo import _, api, models
 from odoo import release
 from odoo.tools import html2plaintext
 
+from .phone_utils import partner_raw_phone
+
 _logger = logging.getLogger(__name__)
 
 # Sale chatter events that already have a WaNoti template.
@@ -27,7 +29,7 @@ class WanotiDispatcher(models.AbstractModel):
 
     @api.model
     def _phone(self, partner):
-        raw = partner.mobile or partner.phone or ""
+        raw = partner_raw_phone(partner)
         digits = "".join(ch for ch in raw if ch.isdigit())
         return digits if len(digits) >= 8 else ""
 
@@ -132,7 +134,7 @@ class WanotiDispatcher(models.AbstractModel):
         date_order = order.date_order
         return {
             "customer_name": partner.name or "",
-            "customer_phone": partner.mobile or partner.phone or "",
+            "customer_phone": partner_raw_phone(partner),
             "customer_email": partner.email or "",
             "order_id": order.name or "",
             "order_total": "%s %s" % (order.amount_total, order.currency_id.name or ""),
@@ -323,7 +325,7 @@ class WanotiDispatcher(models.AbstractModel):
                 api_url + "/plugin/ping",
                 json={
                     "site_url": self._site_url(),
-                    "plugin_version": "odoo-19.0.1.0.16",
+                    "plugin_version": "odoo-19.0.1.0.17",
                     "wp_version": "odoo-%s" % release.version,
                     "woocommerce_active": False,
                 },

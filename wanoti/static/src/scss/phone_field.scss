@@ -1,0 +1,27 @@
+.o_wanoti_phone {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+    align-items: center;
+
+    select.o_input,
+    select.form-control {
+        flex: 1 1 9.5rem;
+        width: auto;
+        max-width: 100%;
+        min-width: 8rem;
+    }
+
+    input.o_input,
+    input.form-control {
+        flex: 2 1 8rem;
+        width: auto;
+        min-width: 0;
+    }
+}
+
+.o_wanoti_phone_readonly {
+    direction: ltr;
+    unicode-bidi: isolate;
+}
