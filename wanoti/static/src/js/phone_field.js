@@ -11,6 +11,7 @@ export class WanotiPhoneField extends Component {
     static props = {
         ...standardFieldProps,
         placeholder: { type: String, optional: true },
+        "*": true,
     };
 
     setup() {
@@ -93,6 +94,14 @@ export const wanotiPhoneField = {
     },
 };
 
-registry.category("fields").add("wanoti_phone", wanotiPhoneField);
-registry.category("fields").add("phone", wanotiPhoneField, { force: true });
-registry.category("fields").add("form.phone", wanotiPhoneField, { force: true });
+const fields = registry.category("fields");
+const registerField = fields.add.bind(fields);
+fields.add = function (key, value, options) {
+    if (key === "phone" || key === "form.phone") {
+        return registerField(key, wanotiPhoneField, { ...(options || {}), force: true });
+    }
+    return registerField(key, value, options);
+};
+registerField("wanoti_phone", wanotiPhoneField);
+registerField("phone", wanotiPhoneField, { force: true });
+registerField("form.phone", wanotiPhoneField, { force: true });
