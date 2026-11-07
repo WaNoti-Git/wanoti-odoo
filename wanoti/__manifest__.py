@@ -25,6 +25,7 @@ password login and checkout continue.
     "website": "https://wanoti.net",
     "support": "support@wanoti.com",
     "license": "LGPL-3",
+    "external_dependencies": {"python": ["requests"]},
     "images": ["static/description/banner.png"],
     "depends": ["mail", "web"],
     "data": [
