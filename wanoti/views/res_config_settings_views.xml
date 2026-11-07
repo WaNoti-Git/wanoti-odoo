@@ -50,7 +50,7 @@
                             <field name="wanoti_otp_checkout"/>
                         </setting>
                         <setting string="Send a test code" help="Sends one code. It does not turn login or checkout codes on.">
-                            <field name="wanoti_otp_test_phone" placeholder="Country code and number"/>
+                            <field name="wanoti_otp_test_phone" widget="wanoti_phone" placeholder="Mobile number"/>
                             <div class="mt8">
                                 <button name="execute" type="object" string="Send test code" class="btn-primary" icon="fa-whatsapp" context="{'wanoti_action': 'otp'}"/>
                             </div>
