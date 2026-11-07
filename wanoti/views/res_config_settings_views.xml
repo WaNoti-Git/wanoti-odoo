@@ -16,9 +16,12 @@
                         <setting string="API URL" help="Use https://wanoti.net/api for the hosted service.">
                             <field name="wanoti_api_url" placeholder="https://wanoti.net/api"/>
                         </setting>
-                        <setting string="API key" help="From the WaNoti dashboard, under your account.">
+                        <setting string="API key" help="From Dashboard → Plugins on wanoti.net.">
                             <field name="wanoti_api_key" password="True"/>
-                            <button name="action_wanoti_test" type="object" string="Test connection" class="btn-link" icon="fa-plug"/>
+                        </setting>
+                        <setting string="Connection status" help="Stays on this page after the test. A green or red message also stays open until you close it.">
+                            <field name="wanoti_status_message" readonly="1" placeholder="Not tested yet"/>
+                            <button name="execute" type="object" string="Test connection" class="btn-primary" icon="fa-plug" context="{'wanoti_action': 'test'}"/>
                         </setting>
                     </block>
                     <block title="WhatsApp code" name="wanoti_otp">
@@ -34,9 +37,9 @@
                         <setting string="Website checkout" help="Starts off. When on, and Website Sales is installed, the customer confirms their mobile before payment.">
                             <field name="wanoti_otp_checkout"/>
                         </setting>
-                        <setting string="Send a test code" help="Uses the same WhatsApp template as a real code. Nothing is turned on by this.">
-                            <field name="wanoti_otp_test_phone" placeholder="2015xxxxxxxx"/>
-                            <button name="action_wanoti_test_otp" type="object" string="Send test code" class="btn-link" icon="fa-whatsapp"/>
+                        <setting string="Send a test code" help="Sends one WhatsApp code to this number. It does not turn login or checkout codes on.">
+                            <field name="wanoti_otp_test_phone" placeholder="Country code and number"/>
+                            <button name="execute" type="object" string="Send test code" class="btn-primary" icon="fa-whatsapp" context="{'wanoti_action': 'otp'}"/>
                         </setting>
                     </block>
                     <block title="Notifications" name="wanoti_events">
