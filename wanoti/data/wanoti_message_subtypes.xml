@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mt_picking_done" model="mail.message.subtype">
+        <field name="name">Transfer validated</field>
+        <field name="description">Delivery, receipt, or internal transfer validated</field>
+        <field name="res_model">stock.picking</field>
+        <field name="default" eval="False"/>
+        <field name="hidden" eval="True"/>
+    </record>
+    <record id="mt_pos_paid" model="mail.message.subtype">
+        <field name="name">POS order paid</field>
+        <field name="description">Point of sale order paid</field>
+        <field name="res_model">pos.order</field>
+        <field name="default" eval="False"/>
+        <field name="hidden" eval="True"/>
+    </record>
+</odoo>

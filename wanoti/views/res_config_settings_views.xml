@@ -7,8 +7,18 @@
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app data-string="WaNoti" string="WaNoti" name="wanoti" groups="base.group_system">
+                    <field name="wanoti_has_sale" invisible="1"/>
+                    <field name="wanoti_has_account" invisible="1"/>
+                    <field name="wanoti_has_purchase" invisible="1"/>
+                    <field name="wanoti_has_crm" invisible="1"/>
+                    <field name="wanoti_has_project" invisible="1"/>
+                    <field name="wanoti_has_stock" invisible="1"/>
+                    <field name="wanoti_has_point_of_sale" invisible="1"/>
+                    <field name="wanoti_has_hr_recruitment" invisible="1"/>
+                    <field name="wanoti_has_hr_holidays" invisible="1"/>
+                    <field name="wanoti_has_maintenance" invisible="1"/>
                     <block title="Data sharing" name="wanoti_consent">
-                        <setting string="Send through WaNoti" help="Starts off. When on, phone numbers and the notification or code you enable are sent to WaNoti so they can be delivered on your WhatsApp. Records stay in this database. Privacy policy: https://wanoti.net/privacy">
+                        <setting string="Send through WaNoti" help="Starts off. Phone numbers and the message or code you turn on are sent to WaNoti for WhatsApp delivery. Records stay in this database.">
                             <field name="wanoti_data_consent"/>
                         </setting>
                     </block>
@@ -16,35 +26,287 @@
                         <setting string="API URL" help="Use https://wanoti.net/api for the hosted service.">
                             <field name="wanoti_api_url" placeholder="https://wanoti.net/api"/>
                         </setting>
-                        <setting string="API key" help="From Dashboard → Plugins on wanoti.net.">
+                        <setting string="API key" help="From Dashboard, then Plugins, on wanoti.net.">
                             <field name="wanoti_api_key" password="True"/>
                         </setting>
-                        <setting string="Connection status" help="Stays on this page after the test. A green or red message also stays open until you close it.">
+                        <setting string="Connection status" help="The result stays here after the test.">
                             <field name="wanoti_status_message" readonly="1" placeholder="Not tested yet"/>
-                            <button name="execute" type="object" string="Test connection" class="btn-primary" icon="fa-plug" context="{'wanoti_action': 'test'}"/>
+                            <div class="mt8">
+                                <button name="execute" type="object" string="Test connection" class="btn-primary" icon="fa-plug" context="{'wanoti_action': 'test'}"/>
+                            </div>
                         </setting>
                     </block>
-                    <block title="WhatsApp code" name="wanoti_otp">
-                        <setting string="Portal login" help="Starts off. When on, a portal customer with a mobile number enters a WhatsApp code after the password.">
+                    <block title="WhatsApp sign-in" name="wanoti_otp">
+                        <setting string="Portal login" help="A portal customer with a mobile number enters a WhatsApp code after the password.">
                             <field name="wanoti_otp_login"/>
                         </setting>
-                        <setting string="Internal users" help="Starts off. When on, an internal user with a mobile number enters a WhatsApp code after the password. A user with no mobile number still signs in with the password only.">
+                        <setting string="Internal users" help="An internal user with a mobile number enters a WhatsApp code after the password.">
                             <field name="wanoti_otp_internal"/>
                         </setting>
-                        <setting string="Code instead of password" help="Starts off. When on, a user who has a mobile number can sign in with a new WhatsApp code and does not type their Odoo password.">
+                        <setting string="Code instead of password" help="A user with a mobile number can sign in with a WhatsApp code and skip the Odoo password.">
                             <field name="wanoti_otp_passwordless"/>
                         </setting>
-                        <setting string="Website checkout" help="Starts off. When on, and Website Sales is installed, the customer confirms their mobile before payment.">
+                        <setting string="Website checkout" help="When Website Sales is installed, the customer confirms their mobile before payment.">
                             <field name="wanoti_otp_checkout"/>
                         </setting>
-                        <setting string="Send a test code" help="Sends one WhatsApp code to this number. It does not turn login or checkout codes on.">
+                        <setting string="Send a test code" help="Sends one code. It does not turn login or checkout codes on.">
                             <field name="wanoti_otp_test_phone" placeholder="Country code and number"/>
-                            <button name="execute" type="object" string="Send test code" class="btn-primary" icon="fa-whatsapp" context="{'wanoti_action': 'otp'}"/>
+                            <div class="mt8">
+                                <button name="execute" type="object" string="Send test code" class="btn-primary" icon="fa-whatsapp" context="{'wanoti_action': 'otp'}"/>
+                            </div>
                         </setting>
                     </block>
-                    <block title="Notifications" name="wanoti_events">
-                        <setting string="Events" help="Every event starts off. Turn on Customer, Staff, or both. The list follows the apps installed on this database, including Project, Helpdesk, Inventory, and Sales.">
-                            <button name="action_open_rules" type="object" string="Choose notifications" class="btn-primary" icon="fa-bell"/>
+                    <block title="Notifications" name="wanoti_events_intro">
+                        <setting string="Business events" help="Every switch starts off. A section appears only when that app is installed. Customer is the partner on the document. Staff is the salesperson, assignee, or responsible user.">
+                            <button name="action_open_rules" type="object" string="Open the full list" class="btn-secondary" icon="fa-list"/>
+                        </setting>
+                    </block>
+                    <block title="Sales" name="wanoti_app_sale" invisible="not wanoti_has_sale">
+                        <setting string="Quotation sent" help="WhatsApp when a quotation is sent.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_sale_sent_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_sale_sent_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_sale_sent_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_sale_sent_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Order confirmed" help="WhatsApp when a quotation is confirmed.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_sale_confirmed_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_sale_confirmed_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_sale_confirmed_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_sale_confirmed_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Invoicing" name="wanoti_app_account" invisible="not wanoti_has_account">
+                        <setting string="Validated" help="WhatsApp when an invoice or bill is confirmed.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_invoice_validated_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_invoice_validated_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_invoice_validated_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_invoice_validated_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Paid" help="WhatsApp when an invoice is paid.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_invoice_paid_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_invoice_paid_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_invoice_paid_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_invoice_paid_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Purchase" name="wanoti_app_purchase" invisible="not wanoti_has_purchase">
+                        <setting string="Sent to vendor" help="WhatsApp when a request for quotation is sent.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_po_sent_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_po_sent_customer" string="Vendor" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_po_sent_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_po_sent_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Confirmed" help="WhatsApp when a purchase order is confirmed.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_po_confirmed_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_po_confirmed_customer" string="Vendor" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_po_confirmed_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_po_confirmed_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Locked" help="WhatsApp when a purchase order is locked.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_po_done_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_po_done_customer" string="Vendor" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_po_done_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_po_done_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="CRM" name="wanoti_app_crm" invisible="not wanoti_has_crm">
+                        <setting string="Created" help="WhatsApp when a lead or opportunity is created.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_crm_created_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_crm_created_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_crm_created_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_crm_created_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Stage changed" help="WhatsApp to the salesperson when the stage changes.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_crm_stage_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_crm_stage_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Won" help="WhatsApp when an opportunity is won.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_crm_won_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_crm_won_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_crm_won_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_crm_won_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Lost" help="WhatsApp to the salesperson when an opportunity is lost.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_crm_lost_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_crm_lost_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Project" name="wanoti_app_project" invisible="not wanoti_has_project">
+                        <setting string="Created" help="WhatsApp when a task is created.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_task_new_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_task_new_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_task_new_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_task_new_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Stage changed" help="WhatsApp when a task changes stage.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_task_stage_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_task_stage_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_task_stage_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_task_stage_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Done" help="WhatsApp when a task is marked done.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_task_done_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_task_done_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_task_done_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_task_done_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Inventory" name="wanoti_app_stock" invisible="not wanoti_has_stock">
+                        <setting string="Validated" help="WhatsApp when a delivery, receipt, or internal transfer is validated.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_picking_done_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_picking_done_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_picking_done_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_picking_done_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Point of Sale" name="wanoti_app_point_of_sale" invisible="not wanoti_has_point_of_sale">
+                        <setting string="Paid" help="WhatsApp when a point of sale order is paid.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_pos_paid_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_pos_paid_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_pos_paid_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_pos_paid_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Recruitment" name="wanoti_app_hr_recruitment" invisible="not wanoti_has_hr_recruitment">
+                        <setting string="New applicant" help="WhatsApp to the recruiter when someone applies.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_applicant_new_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_applicant_new_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Hired" help="WhatsApp when an applicant is hired.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_applicant_hired_customer" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_applicant_hired_customer" string="Customer" class="o_light_label ms-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <field name="wanoti_evt_applicant_hired_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_applicant_hired_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Time Off" name="wanoti_app_hr_holidays" invisible="not wanoti_has_hr_holidays">
+                        <setting string="Requested" help="WhatsApp to the employee and the manager when time off is requested.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_leave_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_leave_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Maintenance" name="wanoti_app_maintenance" invisible="not wanoti_has_maintenance">
+                        <setting string="Created" help="WhatsApp when a maintenance request is created.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_maint_new_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_maint_new_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Status changed" help="WhatsApp when a maintenance request changes status.">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="wanoti_evt_maint_status_staff" widget="boolean_toggle"/>
+                                    <label for="wanoti_evt_maint_status_staff" string="Staff" class="o_light_label ms-2"/>
+                                </div>
+                            </div>
                         </setting>
                     </block>
                 </app>

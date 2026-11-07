@@ -1,5 +1,7 @@
 from odoo import _, api, fields, models
 
+from .wanoti_rule import EVENTS, MODULES
+
 
 class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
@@ -51,6 +53,28 @@ class ResConfigSettings(models.TransientModel):
         for record in self:
             record.wanoti_status_message = message
 
+    @api.depends_context("company")
+    def _compute_wanoti_events(self):
+        rules = self.env["wanoti.rule"].sudo()
+        rules._refresh_events()
+        flags = {}
+        company = self.env.company
+        for rule in rules.search([("company_id", "=", company.id)]):
+            xmlid = rule.subtype_id.get_external_id().get(rule.subtype_id.id)
+            flags[xmlid] = (bool(rule.notify_customer), bool(rule.notify_staff))
+        installed = rules._installed_modules()
+        for record in self:
+            for event in EVENTS:
+                customer, staff = flags.get(event.xmlid, (False, False))
+                record["wanoti_evt_%s_customer" % event.key] = customer
+                record["wanoti_evt_%s_staff" % event.key] = staff
+            for module in MODULES:
+                record["wanoti_has_%s" % module] = module in installed
+
+    def get_values(self):
+        self.env["wanoti.rule"].sudo()._refresh_events()
+        return super().get_values()
+
     def execute(self):
         self.ensure_one()
         action = self.env.context.get("wanoti_action")
@@ -91,3 +115,26 @@ class ResConfigSettings(models.TransientModel):
         ok = bool(result.get("ok"))
         message = _("Code sent on WhatsApp.") if ok else result.get("message")
         return self._wanoti_notice(message, ok)
+
+    for _event in EVENTS:
+        for _role in ("customer", "staff"):
+            _fname = "wanoti_evt_%s_%s" % (_event.key, _role)
+            _xmlid = _event.xmlid
+
+            def _inverse(self, xmlid=_xmlid, role=_role, fname=_fname):
+                for record in self:
+                    record.env["wanoti.rule"]._set_flag(
+                        record.company_id, xmlid, role, record[fname]
+                    )
+
+            locals()[_fname] = fields.Boolean(
+                string="Customer" if _role == "customer" else "Staff",
+                compute="_compute_wanoti_events",
+                inverse=_inverse,
+            )
+        del _role, _fname, _xmlid, _inverse
+    del _event
+
+    for _module in MODULES:
+        locals()["wanoti_has_%s" % _module] = fields.Boolean(compute="_compute_wanoti_events")
+    del _module
