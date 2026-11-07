@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="wanoti.PhoneField">
+        <a t-if="props.readonly" t-att-href="digits ? 'tel:+' + digits : undefined" class="o_wanoti_phone_readonly" t-esc="display"/>
+        <span t-else="" class="o_wanoti_phone">
+            <select class="o_input" t-att-aria-label="countryLabel" t-on-change="onCountry">
+                <t t-foreach="countries" t-as="country" t-key="country.code">
+                    <option t-att-value="country.code" t-att-selected="country.code === state.iso" t-esc="countryText(country)"/>
+                </t>
+            </select>
+            <input
+                class="o_input"
+                type="tel"
+                inputmode="numeric"
+                autocomplete="tel-national"
+                t-att-id="props.id"
+                t-att-placeholder="inputPlaceholder"
+                t-att-value="state.local"
+                t-on-input="onLocal"
+            />
+        </span>
+    </t>
+</templates>

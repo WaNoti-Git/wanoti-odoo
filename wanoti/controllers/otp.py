@@ -4,6 +4,7 @@ from odoo import _, http
 from odoo.exceptions import AccessDenied
 from odoo.http import request
 from odoo.addons.web.controllers.home import Home
+from odoo.addons.wanoti.models.phone_utils import partner_raw_phone
 
 
 class WanotiHome(Home):
@@ -58,7 +59,7 @@ class WanotiHome(Home):
                         })
                     if not checked:
                         return super().web_login(redirect=redirect, **kw)
-                    phone = user.partner_id.mobile or user.partner_id.phone
+                    phone = partner_raw_phone(user.partner_id)
                     result = request.env["wanoti.otp"].sudo().create_challenge(
                         user.company_id or request.env.company,
                         phone,
@@ -83,7 +84,7 @@ class WanotiHome(Home):
         login = (login or "").strip()
         user = request.env["res.users"].sudo().search([("login", "=", login)], limit=1) if login else request.env["res.users"]
         company = user.company_id if user else request.env.company
-        phone = user.partner_id.mobile or user.partner_id.phone if user else ""
+        phone = partner_raw_phone(user.partner_id) if user else ""
         allowed = bool(
             user
             and user.active
@@ -216,5 +217,5 @@ class WanotiCheckoutOtp(http.Controller):
 
     def _order_phone(self, order):
         partner = order.partner_id
-        raw = partner.mobile or partner.phone or ""
+        raw = partner_raw_phone(partner)
         return request.env["wanoti.otp"]._digits(raw)

@@ -13,4 +13,6 @@ class ResUsers(models.Model):
         enabled = company.wanoti_otp_login if self.share else company.wanoti_otp_internal
         if not enabled:
             return False
-        return bool(self.env["wanoti.otp"]._digits(self.partner_id.mobile or self.partner_id.phone))
+        from .phone_utils import partner_raw_phone
+
+        return bool(self.env["wanoti.otp"]._digits(partner_raw_phone(self.partner_id)))
