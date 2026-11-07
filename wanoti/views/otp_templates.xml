@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="wanoti_login_code_link" inherit_id="web.login" name="WaNoti code login">
-        <xpath expr="//form[hasclass('oe_login_form')]" position="after">
+        <xpath expr="//form[@role='form']" position="after">
             <form t-if="request.env.company.sudo().wanoti_otp_passwordless" class="mt-2 text-center" method="post" action="/web/login/wanoti-code">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <input type="hidden" name="redirect" t-att-value="redirect or ''"/>
@@ -19,7 +19,7 @@
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                 <input type="hidden" name="redirect" t-att-value="redirect or ''"/>
                 <p>Enter the 6-digit code sent to your WhatsApp.</p>
-                <p t-if="resent" class="alert alert-success">A new code was sent.</p>
+                <p t-if="message" class="alert alert-success" t-esc="message"/>
                 <p t-if="error" class="alert alert-danger" t-esc="error"/>
                 <div class="mb-3">
                     <input type="text" name="code" class="form-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" required="required"/>

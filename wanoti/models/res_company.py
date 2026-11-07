@@ -25,6 +25,8 @@ class ResCompany(models.Model):
         string="WhatsApp code login",
         help="Users with a mobile number can sign in with a new WhatsApp code instead of their password.",
     )
+    wanoti_test_phone = fields.Char(string="WaNoti test mobile")
+    wanoti_status_message = fields.Char(string="WaNoti status")
     wanoti_otp_checkout = fields.Boolean(
         string="Checkout OTP",
         help="Website customers confirm their phone on WhatsApp before payment.",
