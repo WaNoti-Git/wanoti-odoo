@@ -1,129 +1,74 @@
 <div class="wanoti-app">
-<style>
-.wanoti-app, .wanoti-app * { box-sizing: border-box; }
-.wanoti-app img { max-width: 100%; height: auto; }
-@media (max-width: 860px) {
-    .wanoti-app .oe_row,
-    .wanoti-app .oe_span12,
-    .wanoti-app .oe_span7,
-    .wanoti-app .oe_span6,
-    .wanoti-app .oe_span5,
-    .wanoti-app .oe_span3 {
-        float: none !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        display: block !important;
-        clear: both !important;
-    }
-    .wanoti-app .oe_slogan,
-    .wanoti-app h2,
-    .wanoti-app h3 {
-        white-space: normal !important;
-        overflow: visible !important;
-        height: auto !important;
-        font-size: 22px !important;
-        line-height: 1.35 !important;
-        text-align: left !important;
-    }
-    .wanoti-app .oe_span3 h3 { margin-top: 18px !important; }
-    .wanoti-app p, .wanoti-app li { font-size: 15px !important; line-height: 1.5 !important; }
-    .wanoti-app img { display: block; margin: 12px 0 4px; }
-}
-</style>
-<section class="oe_container">
-    <div class="oe_row oe_spaced">
-        <div class="oe_span12 text-center">
-            <h2 class="oe_slogan" style="color:#714B67;">WhatsApp beside email and the inbox</h2>
-            <h3 class="oe_slogan" style="color:#666;">Turn on the business events you want. Customer and staff are separate.</h3>
-            <p class="oe_mt32">
-                WaNoti sends the events you choose through the company's own WhatsApp number.
-                Published for Odoo 17, Odoo 18, and Odoo 19. Install the series that matches the database.
-                The technical name is wanoti.
-            </p>
-            <p>Use it on Odoo.sh or on your own server. Odoo Online cannot install this module.</p>
+    <div class="row">
+        <div class="col-12">
+            <h2 style="color:#714B67;font-size:28px;line-height:1.3;font-weight:500;margin:8px 0 8px;">WhatsApp beside email and the inbox</h2>
+            <p style="font-size:18px;line-height:1.4;color:#555;margin:0 0 12px;">Turn on the business events you want. Customer and staff are separate.</p>
+            <p style="font-size:16px;line-height:1.5;">WaNoti sends the events you choose through the company's own WhatsApp number. Published for Odoo 17, Odoo 18, and Odoo 19. Install the series that matches the database. The technical name is wanoti.</p>
+            <p style="font-size:16px;line-height:1.5;">Use it on Odoo.sh or on your own server. Odoo Online cannot install this module.</p>
         </div>
     </div>
-</section>
-<section class="oe_container oe_dark">
-    <div class="oe_row oe_spaced">
-        <div class="oe_span3">
-            <h3 class="oe_slogan" style="color:#714B67; font-size:20px;">One connection</h3>
-            <p>Paste the API URL and API key, then test. The result stays on the settings page.</p>
+    <div class="row">
+        <div class="col-12 col-md-6" style="margin-bottom:16px;">
+            <h3 style="color:#714B67;font-size:20px;line-height:1.3;margin:0 0 6px;">One connection</h3>
+            <p style="font-size:16px;line-height:1.5;">Paste the API URL and API key, then test. The result stays on the settings page.</p>
         </div>
-        <div class="oe_span3">
-            <h3 class="oe_slogan" style="color:#714B67; font-size:20px;">Real events</h3>
-            <p>Sales, invoicing, purchase, CRM, project, inventory, point of sale, recruitment, time off, and maintenance. A section appears only when that app is installed.</p>
+        <div class="col-12 col-md-6" style="margin-bottom:16px;">
+            <h3 style="color:#714B67;font-size:20px;line-height:1.3;margin:0 0 6px;">Real events</h3>
+            <p style="font-size:16px;line-height:1.5;">Sales, invoicing, purchase, CRM, project, inventory, point of sale, recruitment, time off, and maintenance. A section appears only when that app is installed.</p>
         </div>
-        <div class="oe_span3">
-            <h3 class="oe_slogan" style="color:#714B67; font-size:20px;">Customer and staff</h3>
-            <p>Each event has its own switches. They all start off. Private chatter such as Discussions and Notes is not listed.</p>
+        <div class="col-12 col-md-6" style="margin-bottom:16px;">
+            <h3 style="color:#714B67;font-size:20px;line-height:1.3;margin:0 0 6px;">Customer and staff</h3>
+            <p style="font-size:16px;line-height:1.5;">Each event has its own switches. They all start off. Discussions, activities, and notes are included for every installed app.</p>
         </div>
-        <div class="oe_span3">
-            <h3 class="oe_slogan" style="color:#714B67; font-size:20px;">WhatsApp sign-in</h3>
-            <p>Portal login, internal login, a code instead of a password, and website checkout. Each one starts off.</p>
+        <div class="col-12 col-md-6" style="margin-bottom:16px;">
+            <h3 style="color:#714B67;font-size:20px;line-height:1.3;margin:0 0 6px;">WhatsApp sign-in</h3>
+            <p style="font-size:16px;line-height:1.5;">Portal login, internal login, a code instead of a password, and website checkout. Each one starts off.</p>
         </div>
     </div>
-</section>
-<section class="oe_container">
-    <div class="oe_row oe_spaced">
-        <div class="oe_span5">
-            <h2 class="oe_slogan" style="text-align:left; color:#714B67;">Connection and sign-in</h2>
-            <p class="oe_mt32">The settings page opens with data sharing, the API connection, and the WhatsApp codes. Nothing is sent until data sharing is on and an event or a code is turned on.</p>
-            <p>If WhatsApp is disconnected, password login and checkout continue. A code-instead-of-password login asks for the password.</p>
+    <div class="row" style="margin-bottom:24px;">
+        <div class="col-12 col-md-5">
+            <h2 style="color:#714B67;font-size:26px;line-height:1.3;font-weight:500;margin:8px 0;">Connection and sign-in</h2>
+            <p style="font-size:16px;line-height:1.5;">The settings page opens with data sharing, the API connection, and the WhatsApp codes. Nothing is sent until data sharing is on and an event or a code is turned on.</p>
+            <p style="font-size:16px;line-height:1.5;">If WhatsApp is disconnected, password login and checkout continue. A code-instead-of-password login asks for the password.</p>
         </div>
-        <div class="oe_span7">
-            <img src="screen_connection.png" class="img-fluid img-thumbnail" alt="WaNoti connection and WhatsApp sign-in"/>
+        <div class="col-12 col-md-7">
+            <img src="screen_connection.png" alt="WaNoti connection and WhatsApp sign-in" style="width:100%;max-width:100%;height:auto;"/>
         </div>
     </div>
-</section>
-<section class="oe_container oe_dark">
-    <div class="oe_row oe_spaced">
-        <div class="oe_span7">
-            <img src="screen_sales.png" class="img-fluid img-thumbnail" alt="Sales, invoicing, and purchase switches"/>
+    <div class="row" style="margin-bottom:24px;">
+        <div class="col-12 col-md-7">
+            <img src="screen_sales.png" alt="Sales, invoicing, and purchase switches" style="width:100%;max-width:100%;height:auto;"/>
         </div>
-        <div class="oe_span5">
-            <h2 class="oe_slogan" style="text-align:left; color:#714B67;">Sales, invoices, and purchase</h2>
-            <p class="oe_mt32">Quotation sent and order confirmed can use the WaNoti message templates. Invoices notify on validation and payment. Purchase orders notify the vendor, the buyer, or both.</p>
-            <p>Customer means the partner on the document. On a purchase order that switch is the vendor. Staff is the salesperson or the responsible user.</p>
+        <div class="col-12 col-md-5">
+            <h2 style="color:#714B67;font-size:26px;line-height:1.3;font-weight:500;margin:8px 0;">Sales, invoices, and purchase</h2>
+            <p style="font-size:16px;line-height:1.5;">Quotation sent and order confirmed can use the WaNoti message templates. Invoices notify on validation and payment. Purchase orders notify the vendor, the buyer, or both.</p>
+            <p style="font-size:16px;line-height:1.5;">Customer means the partner on the document. On a purchase order that switch is the vendor. Staff is the salesperson or the responsible user.</p>
         </div>
     </div>
-</section>
-<section class="oe_container">
-    <div class="oe_row oe_spaced">
-        <div class="oe_span5">
-            <h2 class="oe_slogan" style="text-align:left; color:#714B67;">CRM, project, and the warehouse</h2>
-            <p class="oe_mt32">Opportunity created, stage, won, and lost. Task created, stage, and done. A validated delivery or receipt. A paid point of sale order.</p>
-            <p>Recruitment, time off, and maintenance are on the same page when those apps are installed. Every switch still starts off.</p>
+    <div class="row" style="margin-bottom:24px;">
+        <div class="col-12 col-md-5">
+            <h2 style="color:#714B67;font-size:26px;line-height:1.3;font-weight:500;margin:8px 0;">CRM, project, and the warehouse</h2>
+            <p style="font-size:16px;line-height:1.5;">Opportunity created, stage, won, and lost. Task created, stage, and done. A validated delivery or receipt. A paid point of sale order.</p>
+            <p style="font-size:16px;line-height:1.5;">Recruitment, time off, and maintenance are on the same page when those apps are installed. Every switch still starts off.</p>
         </div>
-        <div class="oe_span7">
-            <img src="screen_operations.png" class="img-fluid img-thumbnail" alt="CRM, project, inventory, and point of sale switches"/>
+        <div class="col-12 col-md-7">
+            <img src="screen_operations.png" alt="CRM, project, inventory, and point of sale switches" style="width:100%;max-width:100%;height:auto;"/>
         </div>
     </div>
-</section>
-<section class="oe_container oe_dark">
-    <div class="oe_row oe_spaced">
-        <div class="oe_span12">
-            <h2 class="oe_slogan">Setup</h2>
-            <div class="oe_span6">
-                <ol>
-                    <li>Install WhatsApp Notifications.</li>
-                    <li>Open WaNoti, then Settings.</li>
-                    <li>Turn on data sharing.</li>
-                    <li>Paste the API URL and API key, then test the connection.</li>
-                    <li>Connect the company WhatsApp number in the WaNoti account.</li>
-                </ol>
-            </div>
-            <div class="oe_span6">
-                <ol start="6">
-                    <li>Turn on Customer, Staff, or both for the events you want.</li>
-                    <li>Leave WhatsApp sign-in off until you want a code at login or checkout.</li>
-                </ol>
-                <p>Installing another app later adds that app's section the next time Settings is opened. The new switches start off.</p>
-                <p>Support: <a href="mailto:support@wanoti.com">support@wanoti.com</a></p>
-            </div>
+    <div class="row">
+        <div class="col-12">
+            <h2 style="color:#714B67;font-size:26px;line-height:1.3;font-weight:500;margin:8px 0;">Setup</h2>
+            <ol style="font-size:16px;line-height:1.6;padding-left:20px;">
+                <li>Install WhatsApp Notifications.</li>
+                <li>Open WaNoti, then Settings.</li>
+                <li>Turn on data sharing.</li>
+                <li>Paste the API URL and API key, then test the connection.</li>
+                <li>Connect the company WhatsApp number in the WaNoti account.</li>
+                <li>Turn on Customer, Staff, or both for the events you want.</li>
+                <li>Leave WhatsApp sign-in off until you want a code at login or checkout.</li>
+            </ol>
+            <p style="font-size:16px;line-height:1.5;">Installing another app later adds that app's section the next time Settings is opened. The new switches start off.</p>
+            <p style="font-size:16px;line-height:1.5;">Support: <a href="mailto:support@wanoti.com">support@wanoti.com</a></p>
         </div>
     </div>
-</section>
 </div>
