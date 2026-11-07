@@ -2,12 +2,22 @@
 <templates xml:space="preserve">
     <t t-name="wanoti.PhoneField">
         <a t-if="props.readonly" t-att-href="digits ? 'tel:+' + digits : undefined" class="o_wanoti_phone_readonly" t-esc="display"/>
-        <span t-else="" class="o_wanoti_phone">
-            <select class="o_input" t-att-aria-label="countryLabel" t-on-change="onCountry">
-                <t t-foreach="countries" t-as="country" t-key="country.code">
-                    <option t-att-value="country.code" t-att-selected="country.code === state.iso" t-esc="countryText(country)"/>
-                </t>
-            </select>
+        <span t-else="" class="o_wanoti_phone" t-ref="root">
+            <span class="o_wanoti_phone_country">
+                <button type="button" class="o_input o_wanoti_phone_toggle" t-on-click="toggleCountry" t-att-aria-expanded="state.open ? 'true' : 'false'" t-att-aria-label="countryLabel">
+                    <span class="o_wanoti_phone_toggle_label" t-esc="selectedText"/>
+                    <i class="fa fa-caret-down" aria-hidden="true"/>
+                </button>
+                <span t-if="state.open" class="o_wanoti_phone_menu" role="listbox" t-att-style="menuStyle">
+                    <input class="o_input" type="text" autocomplete="off" t-ref="search" t-att-placeholder="searchPlaceholder" t-att-aria-label="searchPlaceholder" t-att-value="state.query" t-on-input="onSearch" t-on-keydown="onSearchKey"/>
+                    <span class="o_wanoti_phone_options">
+                        <t t-foreach="visibleCountries" t-as="country" t-key="country.code">
+                            <button type="button" class="o_wanoti_phone_option" t-att-class="{'o_wanoti_phone_option_active': country_index === state.active, 'o_wanoti_phone_option_selected': country.code === state.iso}" t-att-data-code="country.code" t-on-click="onPick" t-esc="countryText(country)"/>
+                        </t>
+                        <span t-if="!visibleCountries.length" class="o_wanoti_phone_empty" t-esc="emptyLabel"/>
+                    </span>
+                </span>
+            </span>
             <input
                 class="o_input"
                 type="tel"

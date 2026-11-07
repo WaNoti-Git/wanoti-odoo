@@ -5,12 +5,28 @@
     width: 100%;
     align-items: center;
 
-    select.o_input,
-    select.form-control {
-        flex: 1 1 9.5rem;
-        width: auto;
+    .o_wanoti_phone_country {
+        position: relative;
+        flex: 1 1 11rem;
+        min-width: 9rem;
         max-width: 100%;
-        min-width: 8rem;
+    }
+
+    .o_wanoti_phone_toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        width: 100%;
+        text-align: start;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .o_wanoti_phone_toggle_label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     input.o_input,
@@ -19,6 +35,53 @@
         width: auto;
         min-width: 0;
     }
+}
+
+.o_wanoti_phone_menu {
+    position: fixed;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-sizing: border-box;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.o_wanoti_phone_options {
+    display: flex;
+    flex-direction: column;
+    max-height: 240px;
+    overflow: auto;
+}
+
+.o_wanoti_phone_option {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 6px 8px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+}
+
+.o_wanoti_phone_option_active,
+.o_wanoti_phone_option:hover {
+    background: #f0f0f0;
+}
+
+.o_wanoti_phone_option_selected {
+    font-weight: 600;
+}
+
+.o_wanoti_phone_empty {
+    padding: 8px;
+    color: #6c757d;
 }
 
 .o_wanoti_phone_readonly {

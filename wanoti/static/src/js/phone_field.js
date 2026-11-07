@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, onWillUpdateProps, useState } from "@odoo/owl";
+import { Component, onWillUpdateProps, useExternalListener, useRef, useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
@@ -19,9 +19,16 @@ export class WanotiPhoneField extends Component {
         this.state = useState({
             iso: parts.matched ? parts.iso : defaultIso(),
             local: parts.local,
+            open: false,
+            query: "",
+            active: 0,
         });
         this.countries = COUNTRIES.slice().sort((a, b) => a.name.localeCompare(b.name));
+        this.rootRef = useRef("root");
+        this.searchRef = useRef("search");
         onWillUpdateProps((next) => this._sync(next));
+        useExternalListener(window, "pointerdown", (ev) => this._closeIfOutside(ev));
+        useExternalListener(window, "scroll", (ev) => this._closeOnScroll(ev), { capture: true });
     }
 
     _raw(props) {
@@ -39,6 +46,24 @@ export class WanotiPhoneField extends Component {
         this.state.local = parts.local;
     }
 
+    _closeIfOutside(ev) {
+        const root = this.rootRef.el;
+        if (this.state.open && root && !root.contains(ev.target)) {
+            this.state.open = false;
+        }
+    }
+
+    _closeOnScroll(ev) {
+        const root = this.rootRef.el;
+        if (!this.state.open || !root) {
+            return;
+        }
+        if (ev && ev.target && (ev.target === root || root.contains(ev.target))) {
+            return;
+        }
+        this.state.open = false;
+    }
+
     get digits() {
         return this._raw(this.props).replace(/\D/g, "");
     }
@@ -51,8 +76,47 @@ export class WanotiPhoneField extends Component {
         return _t("Country code");
     }
 
+    get searchPlaceholder() {
+        return _t("Search country");
+    }
+
+    get emptyLabel() {
+        return _t("No country found");
+    }
+
     get inputPlaceholder() {
         return this.props.placeholder || _t("Mobile number");
+    }
+
+    get selectedCountry() {
+        return this.countries.find((country) => country.code === this.state.iso);
+    }
+
+    get selectedText() {
+        return this.selectedCountry ? this.countryText(this.selectedCountry) : this.countryLabel;
+    }
+
+    get visibleCountries() {
+        const query = this.state.query.trim().toLowerCase().replace(/^\+/, "");
+        if (!query) {
+            return this.countries;
+        }
+        return this.countries.filter((country) => {
+            return country.name.toLowerCase().includes(query)
+                || country.code.toLowerCase() === query
+                || country.dial.startsWith(query);
+        });
+    }
+
+    get menuStyle() {
+        const button = this.rootRef.el && this.rootRef.el.querySelector(".o_wanoti_phone_toggle");
+        if (!button) {
+            return "";
+        }
+        const box = button.getBoundingClientRect();
+        const width = Math.max(box.width, 240);
+        const left = Math.min(box.left, window.innerWidth - width - 8);
+        return `top:${Math.round(box.bottom + 4)}px;left:${Math.round(Math.max(8, left))}px;width:${Math.round(width)}px;`;
     }
 
     countryText(country) {
@@ -67,9 +131,74 @@ export class WanotiPhoneField extends Component {
         }
     }
 
-    onCountry(ev) {
-        this.state.iso = ev.target.value;
+    toggleCountry() {
+        this.state.open = !this.state.open;
+        this.state.query = "";
+        if (!this.state.open) {
+            return;
+        }
+        const index = this.visibleCountries.findIndex((country) => country.code === this.state.iso);
+        this.state.active = index >= 0 ? index : 0;
+        setTimeout(() => {
+            const input = this.searchRef.el;
+            if (input) {
+                input.focus();
+            }
+            this.scrollActive();
+        }, 0);
+    }
+
+    onSearch(ev) {
+        this.state.query = ev.target.value;
+        this.state.active = 0;
+    }
+
+    onSearchKey(ev) {
+        const list = this.visibleCountries;
+        if (ev.key === "ArrowDown") {
+            ev.preventDefault();
+            this.state.active = Math.min(this.state.active + 1, Math.max(list.length - 1, 0));
+            this.scrollActive();
+        } else if (ev.key === "ArrowUp") {
+            ev.preventDefault();
+            this.state.active = Math.max(this.state.active - 1, 0);
+            this.scrollActive();
+        } else if (ev.key === "Enter") {
+            ev.preventDefault();
+            const country = list[this.state.active];
+            if (country) {
+                this.pickCountry(country);
+            }
+        } else if (ev.key === "Escape") {
+            ev.preventDefault();
+            this.state.open = false;
+        }
+    }
+
+    onPick(ev) {
+        const code = ev.currentTarget.dataset.code;
+        const country = this.countries.find((item) => item.code === code);
+        if (country) {
+            this.pickCountry(country);
+        }
+    }
+
+    pickCountry(country) {
+        this.state.iso = country.code;
+        this.state.open = false;
+        this.state.query = "";
         this.commit();
+    }
+
+    scrollActive() {
+        const root = this.rootRef.el;
+        if (!root) {
+            return;
+        }
+        const option = root.querySelectorAll(".o_wanoti_phone_option")[this.state.active];
+        if (option) {
+            option.scrollIntoView({ block: "nearest" });
+        }
     }
 
     onLocal(ev) {
