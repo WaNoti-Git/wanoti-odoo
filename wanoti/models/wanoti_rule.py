@@ -61,7 +61,7 @@ EVENT_BY_XMLID = {event.xmlid: event for event in EVENTS}
 class WanotiRule(models.Model):
     _name = "wanoti.rule"
     _description = "WaNoti notification event"
-    _order = "sequence, id"
+    _order = "app_label, document, sequence, id"
 
     company_id = fields.Many2one(
         "res.company",
@@ -94,6 +94,46 @@ class WanotiRule(models.Model):
     ]
 
     @api.model
+    def _thread_models(self):
+        models = self.env["ir.model"].sudo().search([
+            ("transient", "=", False),
+            ("is_mail_thread", "=", True),
+        ])
+        return models.filtered(
+            lambda model: model.model in self.env
+            and not model.model.startswith(("ir.", "bus.", "mail.", "wanoti.", "base_import."))
+        )
+
+    @api.model
+    def _app_label(self, model):
+        module_name = (model.modules or "").split(",")[0].strip()
+        if not module_name:
+            return model.name or model.model
+        module = self.env["ir.module.module"].sudo().search([("name", "=", module_name)], limit=1)
+        return module.shortdesc or module_name
+
+    @api.model
+    def _is_private_note(self, subtype):
+        note = self.env.ref("mail.mt_note", raise_if_not_found=False)
+        if not note or not subtype:
+            return False
+        return subtype == note or subtype.parent_id == note
+
+    @api.model
+    def _subtypes_for(self, model):
+        subtype_model = self.env["mail.message.subtype"].sudo()
+        generic = subtype_model.search([
+            ("res_model", "=", False),
+            ("hidden", "=", False),
+            ("parent_id", "=", False),
+        ])
+        specific = subtype_model.search([
+            ("res_model", "=", model.model),
+            ("hidden", "=", False),
+        ])
+        return generic | specific
+
+    @api.model
     def _installed_modules(self):
         return set(
             self.env["ir.module.module"].sudo().search([("state", "=", "installed")]).mapped("name")
@@ -117,30 +157,56 @@ class WanotiRule(models.Model):
 
     @api.model
     def _refresh_events(self):
-        """Keep one row per business event that this database can actually send."""
+        """List every installed app, and keep the named business events on top of that list."""
         if self.env.context.get("wanoti_refreshing"):
             return
         self = self.with_context(wanoti_refreshing=True)
         companies = self.env["res.company"].sudo().search([])
-        active = self._active_events()
+        catalog = {
+            (model.model, subtype.id): (index, event, model)
+            for index, event, subtype, model in self._active_events()
+        }
+        prepared = []
+        for model in self._thread_models():
+            app = self._app_label(model)
+            for subtype in self._subtypes_for(model):
+                prepared.append((model, subtype, app))
+        seen_models = {model.model for model, _subtype, _app in prepared}
+        for model_name, subtype_id in catalog:
+            if model_name in seen_models:
+                continue
+            _index, _event, model = catalog[(model_name, subtype_id)]
+            subtype = self.env["mail.message.subtype"].sudo().browse(subtype_id)
+            prepared.append((model, subtype, _event.app))
+
         existing = {
-            (rule.company_id.id, rule.subtype_id.id): rule
+            (rule.company_id.id, rule.model_id.id, rule.subtype_id.id): rule
             for rule in self.sudo().search([])
         }
         wanted = set()
         to_create = []
         for company in companies:
-            for index, event, subtype, model in active:
-                key = (company.id, subtype.id)
+            for model, subtype, app in prepared:
+                key = (company.id, model.id, subtype.id)
                 wanted.add(key)
-                locked = event.audience == "staff"
-                vals = {
-                    "model_id": model.id,
-                    "app_label": event.app,
-                    "document": event.document,
-                    "sequence": index,
-                    "customer_locked": locked,
-                }
+                named = catalog.get((model.model, subtype.id))
+                if named:
+                    index, event, _model = named
+                    locked = event.audience == "staff"
+                    vals = {
+                        "app_label": event.app,
+                        "document": event.document,
+                        "sequence": index,
+                        "customer_locked": locked,
+                    }
+                else:
+                    locked = self._is_private_note(subtype)
+                    vals = {
+                        "app_label": app,
+                        "document": model.name,
+                        "sequence": (subtype.sequence or 10) + 100,
+                        "customer_locked": locked,
+                    }
                 current = existing.get(key)
                 if current:
                     if locked and current.notify_customer:
@@ -151,6 +217,7 @@ class WanotiRule(models.Model):
                     continue
                 to_create.append({
                     "company_id": company.id,
+                    "model_id": model.id,
                     "subtype_id": subtype.id,
                     "notify_customer": False,
                     "notify_staff": False,
@@ -159,7 +226,8 @@ class WanotiRule(models.Model):
         if to_create:
             self.sudo().create(to_create)
         stale = self.sudo().search([]).filtered(
-            lambda rule: (rule.company_id.id, rule.subtype_id.id) not in wanted
+            lambda rule: (rule.company_id.id, rule.model_id.id, rule.subtype_id.id) not in wanted
+            or rule.model_id.model not in self.env
         )
         if stale:
             stale.unlink()
@@ -177,6 +245,7 @@ class WanotiRule(models.Model):
             return
         rule = self.sudo().search([
             ("company_id", "=", company.id),
+            ("model_id.model", "=", subtype.res_model),
             ("subtype_id", "=", subtype.id),
         ], limit=1)
         if not rule:
@@ -197,7 +266,8 @@ class WanotiRule(models.Model):
             "context": {"search_default_group_app": 1},
             "domain": [("company_id", "in", self.env.companies.ids)],
             "help": _(
-                "<p>These are the business events this database can send. "
+                "<p>Every installed app is listed here, including discussions, activities, and notes. "
+                "Named events such as a sent quotation are included too. "
                 "Every switch starts off. Turn on Customer, Staff, or both.</p>"
             ),
         }
