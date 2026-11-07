@@ -1,4 +1,8 @@
+import logging
+
 from odoo import models
+
+_logger = logging.getLogger(__name__)
 
 
 class MailThread(models.AbstractModel):
@@ -8,7 +12,47 @@ class MailThread(models.AbstractModel):
         res = super()._register_hook()
         from odoo.addons.wanoti.controllers.checkout import patch_website_sale
         patch_website_sale()
+        self._wanoti_patch_documents()
         return res
+
+    def _wanoti_patch_documents(self):
+        self._wanoti_wrap("stock.picking", "_action_done", "wanoti.mt_picking_done", "Transfer validated.")
+        self._wanoti_wrap("pos.order", "action_pos_order_paid", "wanoti.mt_pos_paid", "Point of sale order paid.")
+
+    def _wanoti_wrap(self, model_name, method_name, subtype_xmlid, body):
+        if model_name not in self.env.registry:
+            return
+        model = self.env.registry[model_name]
+        origin = getattr(model, method_name, None)
+        if not origin or getattr(origin, "_wanoti_wrapped", False):
+            return
+
+        def wrapped(records, *args, **kwargs):
+            result = origin(records, *args, **kwargs)
+            subtype = records.env.ref(subtype_xmlid, raise_if_not_found=False)
+            if subtype and records and not records.env.context.get("wanoti_skip"):
+                for record in records:
+                    try:
+                        if hasattr(record, "message_post"):
+                            record.with_context(mail_notify_noemail=True).message_post(
+                                body=body,
+                                subtype_id=subtype.id,
+                            )
+                        else:
+                            message = records.env["mail.message"].sudo().create({
+                                "model": record._name,
+                                "res_id": record.id,
+                                "body": body,
+                                "subtype_id": subtype.id,
+                                "message_type": "notification",
+                            })
+                            records.env["wanoti.dispatcher"].sudo()._enqueue(record, message)
+                    except Exception:
+                        _logger.exception("WaNoti could not queue %s", record)
+            return result
+
+        wrapped._wanoti_wrapped = True
+        setattr(model, method_name, wrapped)
 
     def _notify_thread(self, message, msg_vals=False, **kwargs):
         recipients = super()._notify_thread(message, msg_vals=msg_vals, **kwargs)

@@ -236,10 +236,10 @@ class WanotiDispatcher(models.AbstractModel):
                 pending[phone] = item
 
         if rule.notify_customer:
-            for partner in record._wanoti_customer_partners():
+            for partner in self._customer_partners(record):
                 add(partner, "customer")
         if rule.notify_staff:
-            for partner in record._wanoti_staff_partners(message):
+            for partner in self._staff_partners(record, message):
                 add(partner, "staff")
 
         payloads = []
@@ -251,6 +251,27 @@ class WanotiDispatcher(models.AbstractModel):
             item.pop("role", None)
             payloads.append(item)
         return payloads
+
+    @api.model
+    def _customer_partners(self, record):
+        if hasattr(type(record), "_wanoti_customer_partners"):
+            return record._wanoti_customer_partners()
+        if "partner_id" not in record._fields or not record.partner_id:
+            return self.env["res.partner"]
+        return record.partner_id.filtered(
+            lambda partner: not any(not user.share for user in partner.user_ids)
+        )
+
+    @api.model
+    def _staff_partners(self, record, message):
+        if hasattr(type(record), "_wanoti_staff_partners"):
+            return record._wanoti_staff_partners(message)
+        partners = self.env["res.partner"]
+        if "user_id" in record._fields and record.user_id and record.user_id._name == "res.users":
+            partners |= record.user_id.partner_id
+        return partners.filtered(
+            lambda partner: any(not user.share for user in partner.user_ids)
+        )
 
     @api.model
     def _deliver(self, payloads):
@@ -302,7 +323,7 @@ class WanotiDispatcher(models.AbstractModel):
                 api_url + "/plugin/ping",
                 json={
                     "site_url": self._site_url(),
-                    "plugin_version": "odoo-19.0.1.0.8",
+                    "plugin_version": "odoo-19.0.1.0.9",
                     "wp_version": "odoo-%s" % release.version,
                     "woocommerce_active": False,
                 },
