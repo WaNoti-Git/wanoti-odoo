@@ -39,7 +39,7 @@ function buildPicker(iso, onChange) {
     menu.hidden = true;
     const search = document.createElement("input");
     search.type = "text";
-    search.className = "form-control";
+    search.className = "form-control o_wanoti_phone_search";
     search.placeholder = "Search country";
     search.autocomplete = "off";
     search.setAttribute("aria-label", "Search country");
