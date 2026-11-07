@@ -1,4 +1,4 @@
-WaNoti for Odoo 18 and 19
+WaNoti for Odoo 17
 ===========================
 
 WhatsApp becomes a notification channel next to Email and Inbox.

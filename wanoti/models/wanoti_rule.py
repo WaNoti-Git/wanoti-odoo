@@ -143,7 +143,7 @@ class WanotiRule(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Notifications"),
             "res_model": "wanoti.rule",
-            "view_mode": "list",
+            "view_mode": "tree",
             "target": "current",
             "context": {"search_default_group_app": 1},
             "domain": [("company_id", "in", self.env.companies.ids)],

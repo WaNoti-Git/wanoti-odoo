@@ -9,15 +9,21 @@ from odoo.addons.web.controllers.home import Home
 class WanotiHome(Home):
     def _password_ok(self, user, password):
         try:
-            user.with_user(user)._check_credentials(
-                {"type": "password", "password": password, "login": user.login},
-                {"interactive": False},
-            )
+            user.with_user(user)._check_credentials(password, {"interactive": False})
             return True
         except AccessDenied:
             return False
         except TypeError:
-            return None
+            try:
+                user.with_user(user)._check_credentials(
+                    {"type": "password", "password": password, "login": user.login},
+                    {"interactive": False},
+                )
+                return True
+            except AccessDenied:
+                return False
+            except TypeError:
+                return None
 
     def _finish_login(self, user, redirect):
         user = user.sudo()
