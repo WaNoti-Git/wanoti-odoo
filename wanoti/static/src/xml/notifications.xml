@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="wanoti.NotificationsAction">
+        <div class="o_wanoti_page">
+            <div class="o_wanoti_head">
+                <div>
+                    <h1>Notifications</h1>
+                    <p>Every switch starts off. Customer is the partner on the document. Staff is the salesperson, assignee, or responsible user.</p>
+                </div>
+                <input type="search" placeholder="Search" t-model="state.query"/>
+            </div>
+            <div t-if="state.ready and !visibleGroups.length" class="o_wanoti_empty">
+                No events match this search.
+            </div>
+            <section t-foreach="visibleGroups" t-as="group" t-key="group.name" class="o_wanoti_section">
+                <h2 t-esc="group.name"/>
+                <div class="o_wanoti_grid">
+                    <article t-foreach="group.rules" t-as="rule" t-key="rule.id">
+                        <div class="o_wanoti_doc" t-esc="rule.document"/>
+                        <div class="o_wanoti_event" t-esc="eventName(rule)"/>
+                        <div class="o_wanoti_switches">
+                            <button type="button" class="o_wanoti_switch" t-att-class="{ on: rule.notify_customer, locked: rule.customer_locked }" t-on-click="() => this.toggle(rule, 'notify_customer')">
+                                <span class="o_wanoti_knob"/>
+                                <span t-if="rule.customer_locked">Staff only</span>
+                                <span t-else="">Customer</span>
+                            </button>
+                            <button type="button" class="o_wanoti_switch" t-att-class="{ on: rule.notify_staff }" t-on-click="() => this.toggle(rule, 'notify_staff')">
+                                <span class="o_wanoti_knob"/>
+                                <span>Staff</span>
+                            </button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </t>
+</templates>
